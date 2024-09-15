@@ -4,7 +4,6 @@ const path = require('path');
 
 //Variables
 let listaIds = [];
-let listaLocal = [];
 
 // Importar fetch dinámicamente como ES module
 let fetch;
@@ -23,9 +22,13 @@ app.use(express.json());
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ruta para servir el archivo HTML
+// Ruta para servir el archivo HTML principal
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+// Ruta para servir el archivo HTML de imagenes extra
+app.get("/add", (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/html/img-adicionales.html'));
 });
 //listen de port
 app.listen(port, () => {
@@ -45,76 +48,42 @@ app.get('/api/traerIdDeptos', async (req, res) => {
     }
 });
 
-// Ruta para obtener localizaciones únicas de objetos
-app.get('/api/traerLocal', async (req, res) => {
-    try {
-        // Hacer la petición inicial a la API para obtener todos los objectIDs
-        const apiUrl = 'https://collectionapi.metmuseum.org/public/collection/v1/objects';
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        const objectIDs = data.objectIDs; // Lista de objectIDs obtenidos desde la API
-
-        if (!objectIDs || objectIDs.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron objetos.' });
-        }
-
-        let location = '';
-        // Iterar sobre cada ID en objectIDs
-        for (let i = 0; i < objectIDs.length; i += 1000) {/////no funciona
-            const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-            const respObj = await fetch(objectUrl);
-            const objData = await respObj.json();
-            // Verificar si el campo 'repository' existe y no está vacío
-            if (objData.repository && objData.repository.trim() !== '') {
-                 location = objData.repository;
-            }
-            // Si la localización no está vacía y no se repite, añadirla a listaLocal
-            if (location && !listaLocal.includes(location)) {
-                listaLocal.push(location);
-                console.log(location)
-            }
-            // Detener cuando listaLocal tenga 15 localizaciones únicas
-            if (listaLocal.length >= 15) {
-                break;
-            }
-        }
-
-        // Enviar la lista de localizaciones como respuesta
-        res.json(listaLocal);
-    } catch (error) {
-        console.error('Error al obtener localizaciones:', error);
-        res.status(500).json({ message: 'Error al obtener localizaciones' });
-    }
-});
-
-
-
-// Realizar búsqueda con filtros - genera url y peticion - llena listaIds
+// Realizar búsqueda con filtros - genera url y peticion - llena listaIds local 
 app.get('/api/buscar', async (req, res) => {
-    const { filtro1 = false, filtro2 = false, filtro3 = false, depto = 0, local = '', palabra = '' } = req.query;
+    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '' } = req.query;
+
+    // Convertir a booleanos 
+    let f1 = filtro1 === 'true';
+    let f2 = filtro2 === 'true';
+    let f3 = filtro3 === 'true';
 
     let url = '';
-
-    if (filtro1 && filtro2 && filtro3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
-    } else if (filtro1 && filtro2 && !filtro3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}`;
-    } else if (filtro1 && !filtro2 && filtro3) {
+    console.log(f1)
+    console.log(f2)
+    console.log(f3)
+    console.log(depto)
+    console.log(local)
+    console.log(palabra)
+    if (f1 && f2 && f3) {
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}` ;
+    } else if (f1 && f2 && !f3) {
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}` ;
+    } else if (f1 && !f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}&DepartmentId=${depto}`;
-    } else if (filtro1 && !filtro2 && !filtro3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?DepartmentId=${depto}`;
-    } else if (!filtro1 && filtro2 && filtro3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}`;
-    } else if (!filtro1 && filtro2 && !filtro3) {
+    } else if (f1 && !f2 && !f3) {
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?DepartmentId=${depto}` ;
+    } else if (!f1 && f2 && f3) {
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}` ;
+    } else if (!f1 && f2 && !f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*`;
-    } else if (!filtro1 && !filtro2 && filtro3) {
+    } else if (!f1 && !f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}`;
-    } else if (!filtro1 && !filtro2 && !filtro3) {
+    } else if (!f1 && !f2 && !f3) {
         return res.json([]); // Ningún filtro seleccionado
     }
 
     try {
+        console.log(url + '//////')
         const response = await fetch(url);
         const data = await response.json();
         res.json(data);
@@ -122,7 +91,6 @@ app.get('/api/buscar', async (req, res) => {
         //probando
         // Inicializar un array para almacenar los datos
         listaIds = data;
-        console.log(listaIds + 'stored')
 
 
     } catch (error) {
@@ -131,8 +99,8 @@ app.get('/api/buscar', async (req, res) => {
     }
 });
 
-// Luego de llenar listaIds, ejecuto llamado individual
-app.get('/api/test', async (req, res) => {
+// Luego de llenar listaIds en el metodo anterior buscar, ejecuto llamado individual, todo en el back
+app.get('/api/traerMuseosBack', async (req, res) => {
 
     try {
         let deptos = [];
@@ -160,6 +128,16 @@ app.get('/api/test', async (req, res) => {
         res.status(500).json({ message: 'Error al obtener objetos' });
     }
 });
+
+
+
+
+
+
+
+
+
+
 
 
 // Ruta para obtener un objeto por ID
@@ -224,5 +202,50 @@ app.get('/api/test', async (req, res) => {
 //     } catch (error) {
 //         console.error('Error al obtener objetos filtrados:', error);
 //         res.status(500).json({ message: 'Error al obtener objetos' });
+//     }
+// });
+
+
+// Obtener localizaciones  de objetos
+// app.get('/api/traerLocal', async (req, res) => {
+//     try {
+//         // Hacer la petición inicial a la API para obtener todos los objectIDs
+//         const apiUrl = 'https://collectionapi.metmuseum.org/public/collection/v1/objects';
+//         const response = await fetch(apiUrl);
+//         const data = await response.json();
+
+//         const objectIDs = data.objectIDs; // Lista de objectIDs obtenidos desde la API
+//         //console.log(objectIDs)
+//         if (!objectIDs || objectIDs.length === 0) {
+//             return res.status(404).json({ message: 'No se encontraron objetos.' });
+//         }
+
+//         let location = '';
+//         // Iterar sobre cada ID en objectIDs
+//         for (let i = 0; i < objectIDs.length; i += 1) {/////no funciona
+//             const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${i}`;
+//             const respObj = await fetch(objectUrl);
+//             const objData = await respObj.json();
+//             // Verificar si el campo 'repository' existe y no está vacío
+//             if (objData.country && objData.country.trim() !== '') {
+//                 location = objData.country;
+//                 //console.log(objData.repository)
+//             }
+//             // Si la localización no está vacía y no se repite, añadirla a listaLocal
+//             if (location && !listaLocal.includes(location)) {
+//                 listaLocal.push(location);
+//                 console.log(location + ' agregado')
+//             }
+//             // Detener cuando listaLocal tenga 15 localizaciones únicas
+//             if (listaLocal.length >= 15) {
+//                 break;
+//             }
+//         }
+
+//         // Enviar la lista de localizaciones como respuesta
+//         res.json(listaLocal);
+//     } catch (error) {
+//         console.error('Error al obtener localizaciones:', error);
+//         res.status(500).json({ message: 'Error al obtener localizaciones' });
 //     }
 // });

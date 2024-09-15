@@ -21,7 +21,7 @@
     <div class="container mt-5">
         <form id="form">
             <div class="mb-3">
-                <label class="form-label ">Seleccionar Filtro:</label>
+                <label class="form-label m-2">Seleccionar Filtro:</label>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="filterType" id="filtroIndividual" value="nested" checked>
                     <label class="form-check-label" for="filtroIndividual">
@@ -37,7 +37,7 @@
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label for="departmentSelect" class="form-label me-2">Buscar por Departamento:</label>
-                <select class="form-control me-2" id="departmentSelect">
+                <select class="form-select custom-select-arrow me-2" id="departmentSelect">
                     <option value="OpcionVacio">Seleccionar</option>
                     <!-- Puedes agregar más opciones aquí -->
                 </select>
@@ -45,7 +45,7 @@
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label for="localSelect" class="form-label me-2">Buscar por Localizacion:</label>
-                <select class="form-control me-2" id="localSelect">
+                <select class="form-select custom-select-arrow me-2" id="localSelect">
                     <option value="OpcionVacio">Seleccionar</option>
                     <!-- Puedes agregar más opciones aquí -->
                 </select>
@@ -53,7 +53,7 @@
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label for="keywordInput" class="form-label me-2">Buscar por Palabra Clave:</label>
-                <input type="text" class="form-control me-2" id="keywordInput" placeholder="Introduce la palabra clave">
+                <input type="text" class="form-control me-2" id="inputPalabra" placeholder="Introduce la palabra clave">
                 <button type="button" class="btn btn-primary" id="btnBuscarPalabra">Buscar</button>
             </div>  
             <button type="submit" class="btn btn-primary filter-nested" id="btnSubmit" style="display: none;" >Buscar</button>

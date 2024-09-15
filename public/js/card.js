@@ -74,7 +74,7 @@ export function crearCards( objetos ) {
                     const objetoStr = encodeURIComponent(JSON.stringify(objeto));
 
                     // redirijo al html img-adicionales
-                    window.location.href = `../vistas/img-adicionales.html?objeto=${objetoStr}`;
+                    window.location.href = `/add?objeto=${objetoStr}`;
                 };
 
                 cardBody.appendChild(btnVerMas);
