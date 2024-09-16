@@ -1,18 +1,7 @@
 
 
-// Simulando la respuesta de la API con los datos de los objetos
-const objetosDeArte = [
-    {
-        title: "One-dollar Liberty Head Coin",
-        culture: "",
-        dynasty: "",
-        primaryImageSmall: "", // Reemplaza con la URL de la imagen si existe
-    },
-    // Otros objetos...
-];
-
 // Función para crear y agregar las cards al contenedor
-export function crearCards( objetos ) {
+export const crearCards = async(objetos) => {
 
 
     const gallery = document.getElementById('gallery');
@@ -25,6 +14,7 @@ export function crearCards( objetos ) {
     } else {
 
         objetos.forEach(objeto => {
+
             // Crear el contenedor principal de la card
             const cardCol = document.createElement('div');
             cardCol.className = 'col tarj';

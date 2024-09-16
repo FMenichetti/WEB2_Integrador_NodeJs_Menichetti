@@ -125,7 +125,7 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
     card.crearCards(datosBack)
 
     metodos.mostrarSpinner(0);
-    metodos.limpiarFiltros();
+    //metodos.limpiarFiltros();
     metodos.btnPaginacion( pagina );
 
 }

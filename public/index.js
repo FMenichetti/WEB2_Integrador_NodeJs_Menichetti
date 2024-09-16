@@ -99,6 +99,7 @@ rbAnidado.addEventListener('change', metodos.elijoFiltro);
 //Buscar por depto individual
 btnDepto.addEventListener('click', async () => {
 
+    pagina = 1
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
@@ -115,6 +116,7 @@ btnDepto.addEventListener('click', async () => {
 //Buscar por Location
 btnLocation.addEventListener('click', async () => {
 
+    pagina = 1
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
@@ -132,6 +134,7 @@ btnLocation.addEventListener('click', async () => {
 //Buscar por palabra
 btnPalabra.addEventListener('click', async () => {
 
+    pagina = 1
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
@@ -151,6 +154,7 @@ btnPalabra.addEventListener('click', async () => {
 // Agrega un evento al formulario para el submit
 btnSubmit.addEventListener('click', async (event) => {
 
+    pagina = 0
     event.preventDefault();
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);

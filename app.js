@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const translate = require('node-google-translate-skidz');
 
 //Variables
 let listaIds = [];
@@ -145,14 +146,52 @@ app.get('/api/traerMuseosBack', async (req, res) => {
             }
         }
 
-        //console.log(deptos)
+        ////////////////Probando traduccion
+        // Traducir las propiedades title, culture y dynasty de cada objeto
+        const deptosTraducidos = await Promise.all(
+            deptos.map(async (objeto) => {
+                const [titleTraducido, cultureTraducido, dynastyTraducido] = await Promise.all([
+                    traducirTexto(objeto.title),
+                    traducirTexto(objeto.culture),
+                    traducirTexto(objeto.dynasty)
+                ]);
 
-        res.json(deptos);
+                return {
+                    ...objeto,
+                    title: titleTraducido,
+                    culture: cultureTraducido,
+                    dynasty: dynastyTraducido
+                };
+            })
+        );
+
+        //console.log(deptosTraducidos)
+        res.json(deptosTraducidos);
+        //res.json(deptos);
     } catch (error) {
         console.error('Error al obtener objetos filtrados:', error);
         res.status(500).json({ message: 'Error al obtener objetos' });
     }
 });
+
+
+
+// Método para traducir texto
+const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
+    try {
+        // Traducir el texto
+        const result = await translate({
+            text: texto,
+            source: sourceLang,
+            target: targetLang
+        });
+        
+        return result.translation; // Devolver la traducción
+    } catch (error) {
+        console.error('Error al traducir:', error);
+        return texto; // En caso de error, devolver el texto original
+    }
+};
 
 
 
