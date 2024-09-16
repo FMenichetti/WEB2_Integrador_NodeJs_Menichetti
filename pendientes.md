@@ -3,7 +3,9 @@
 
 Verificar que todos los deptos anden
 
-hacer desplegable de location
+hacer desplegable de location--- se hizo por hard---preguntar
+
+paginacion, funcionan 5 paginas pero al presionar ver img adicionales y volver no recuerda donde estaba
 
 El título, cultura y dinastía de las cards deben mostrarse en el idioma español. Puede utilizar el paquete de node node-google-translate-skidz (https://github.com/statickidz/node-google-translate-skidz)
 

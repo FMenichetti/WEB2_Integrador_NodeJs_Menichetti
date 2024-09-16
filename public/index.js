@@ -1,13 +1,14 @@
 
 import * as consultasBack from './js/consultasBack.js';
 import * as metodos from './js/metodos.js';
+import * as card from './js/card.js';
 // Variables globales
 let indice;
 let palabra;
 let indiceLocal;
 let textLocal;
 const listaLocal = ['Mexico', 'Guatemala', 'United States', 'England', 'Spain', 'Netherlands', 'Canada', 'China', 'Italy', 'Germany', 'Japan', 'Czech Republic', 'France'];
-
+let pagina = 1;
 //Elementos html
 const rbIndividual = document.getElementById('filtroIndividual');
 const rbAnidado = document.getElementById('filtroAnidado');
@@ -16,6 +17,8 @@ const btnDepto = document.getElementById('btnBuscarDepto');
 const btnLocation = document.getElementById('btnBuscarLocation');
 const btnPalabra = document.getElementById('btnBuscarPalabra');
 const btnSubmit = document.getElementById('btnSubmit');
+const btnAnterior = document.getElementById('btnAnterior');
+const btnSiguiente = document.getElementById('btnSiguiente');
 
 
 //inicio
@@ -107,8 +110,7 @@ btnDepto.addEventListener('click', async () => {
         return;
     }
     
-    await consultasBack.runBusqueda();
-    metodos.mostrarSpinner(0);
+    await consultasBack.runBusqueda( pagina );
 })
 //Buscar por Location
 btnLocation.addEventListener('click', async () => {
@@ -125,8 +127,7 @@ btnLocation.addEventListener('click', async () => {
         return;
     }
 
-    await consultasBack.runBusqueda();
-    metodos.mostrarSpinner(0);
+    await consultasBack.runBusqueda( pagina );
 })
 //Buscar por palabra
 btnPalabra.addEventListener('click', async () => {
@@ -143,9 +144,7 @@ btnPalabra.addEventListener('click', async () => {
         return;
     }
 
-    await consultasBack.runBusqueda();
-
-    metodos.mostrarSpinner(0);
+    await consultasBack.runBusqueda( pagina );
 
 })
 
@@ -157,7 +156,41 @@ btnSubmit.addEventListener('click', async (event) => {
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
 
-    await consultasBack.runBusqueda();
+    await consultasBack.runBusqueda( pagina );
     
 
 })
+//Paginacion eventos
+btnSiguiente.addEventListener('click', async () => {
+
+    pagina ++;
+    metodos.borroGaleria();
+    metodos.mostrarSpinner(1);
+    metodos.mostrarErrorFiltrosVacios(0);
+
+    const datosBack = await consultasBack.traerMuseosBack( pagina );
+    
+    card.crearCards(datosBack)
+
+    metodos.mostrarSpinner(0);
+    metodos.limpiarFiltros();
+    metodos.btnPaginacion( pagina );
+
+});
+
+btnAnterior.addEventListener('click', async() => {
+    
+    pagina --;
+    metodos.borroGaleria();
+    metodos.mostrarSpinner(1);
+    metodos.mostrarErrorFiltrosVacios(0);
+
+    const datosBack = await consultasBack.traerMuseosBack( pagina );
+    
+    card.crearCards(datosBack)
+
+    metodos.mostrarSpinner(0);
+    metodos.limpiarFiltros();
+    metodos.btnPaginacion( pagina );
+
+});

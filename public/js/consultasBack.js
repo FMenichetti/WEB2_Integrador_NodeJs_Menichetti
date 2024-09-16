@@ -7,6 +7,7 @@ let palabra;
 let indiceLocal;
 let textLocal;
 //////////////////////////Funciones de consulta a Back
+//Traigo los departamentos y los agrego a la ddl
 export const traerIdDeptos = async () => {
     //Obtengo los Objetos de los departamentos
     const url = `http://localhost:3000/api/traerIdDeptos`;
@@ -35,9 +36,9 @@ export const traerIdDeptos = async () => {
     }
 
 }
-
-export const traerMuseosBack = async() => {
-    const apiUrl = 'http://localhost:3000/api/traerMuseosBack';
+//Traigo los museos del back
+export const traerMuseosBack = async( pagina = 1 ) => {
+    const apiUrl = `http://localhost:3000/api/traerMuseosBack?pagina=${ pagina }`;
     try {
         const response = await fetch(apiUrl);
 
@@ -53,7 +54,7 @@ export const traerMuseosBack = async() => {
         console.error('Hubo un problema con la solicitud:', error);
     }
 }
-
+//Genero la url y la mando al back
 export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) => {
 
     let url = '';
@@ -86,7 +87,7 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) =
     }
 };
 
-export const runBusqueda = async () => { //tengo dentro la funcion de filtro y buscar museos por id
+export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de filtro y buscar museos por id
     //Elementos html
     indice = document.getElementById('departmentSelect').selectedIndex;
     indiceLocal = document.getElementById('localSelect').selectedIndex;
@@ -118,13 +119,14 @@ export const runBusqueda = async () => { //tengo dentro la funcion de filtro y b
     //obtengo array de ids pero los manejo en el back
      await filtro(filtro1, filtro2, filtro3, indice, textLocal, palabra);
     
-    const datosBack = await traerMuseosBack();
+    const datosBack = await traerMuseosBack( pagina );
     
-    console.log('Datos obtenidos:', datosBack);
+    //console.log('Datos obtenidos:', datosBack);
     card.crearCards(datosBack)
 
     metodos.mostrarSpinner(0);
     metodos.limpiarFiltros();
+    metodos.btnPaginacion( pagina );
 
 }
 

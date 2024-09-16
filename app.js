@@ -65,15 +65,15 @@ app.get('/api/buscar', async (req, res) => {
     console.log(local)
     console.log(palabra)
     if (f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}` ;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}` ;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}`;
     } else if (f1 && !f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && !f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?DepartmentId=${depto}` ;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?DepartmentId=${depto}`;
     } else if (!f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}` ;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}`;
     } else if (!f1 && f2 && !f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*`;
     } else if (!f1 && !f2 && f3) {
@@ -102,11 +102,34 @@ app.get('/api/buscar', async (req, res) => {
 // Luego de llenar listaIds en el metodo anterior buscar, ejecuto llamado individual, todo en el back
 app.get('/api/traerMuseosBack', async (req, res) => {
 
+    const pagina = parseInt(req.query.pagina, 10);
+    console.log(pagina)
     try {
         let deptos = [];
 
+        switch (pagina) {
+            case 1:
+                deptosPaginados = listaIds.objectIDs.slice(0, 2000);
+                break;
+            case 2:
+                deptosPaginados = listaIds.objectIDs.slice(2000, 4000);
+                break;
+            case 3:
+                deptosPaginados = listaIds.objectIDs.slice(4000, 6000);
+                break;
+            case 4:
+                deptosPaginados = listaIds.objectIDs.slice(6000, 8000);
+                break;
+            case 5:
+                deptosPaginados = listaIds.objectIDs.slice(8000, 10000);
+                break;
+            default:
+                console.log('Página fuera de rango');
+                break;
+        }
+
         //console.log(storedData)
-        for (let id of listaIds.objectIDs) {  // Aquí debería ser `idArray` para obtener cada ID
+        for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
             const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
             //console.log(objectUrl)
             const objectResponse = await fetch(objectUrl);
@@ -117,10 +140,12 @@ app.get('/api/traerMuseosBack', async (req, res) => {
                 deptos.push(objectData);
             }
 
-            if (deptos.length >= 30) {
+            if (deptos.length >= 20) {
                 break;
             }
         }
+
+        //console.log(deptos)
 
         res.json(deptos);
     } catch (error) {
