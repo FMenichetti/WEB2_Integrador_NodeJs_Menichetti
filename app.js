@@ -225,7 +225,7 @@ const fetchIndividual = async (deptosPaginados) => {
             
             // Verifica si el estado de la respuesta es 200 OK
             if (!response.ok) {
-                console.error(`Error al obtener el objeto con ID ${id}: ${response.statusText}`);
+                //console.error(`Error al obtener el objeto con ID ${id}: ${response.statusText}`);
                 return null; // Retorna null para que este objeto no se incluya en el resultado
             }
 

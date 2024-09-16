@@ -99,6 +99,9 @@ rbAnidado.addEventListener('change', metodos.elijoFiltro);
 //Buscar por depto individual
 btnDepto.addEventListener('click', async () => {
 
+    document.getElementById('localSelect').selectedIndex = 0;
+    document.getElementById('inputPalabra').value = '';
+
     pagina = 1
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
@@ -115,6 +118,9 @@ btnDepto.addEventListener('click', async () => {
 })
 //Buscar por Location
 btnLocation.addEventListener('click', async () => {
+
+    document.getElementById('departmentSelect').selectedIndex = 0;
+    document.getElementById('inputPalabra').value = '';
 
     pagina = 1
     metodos.borroGaleria();
@@ -133,6 +139,9 @@ btnLocation.addEventListener('click', async () => {
 })
 //Buscar por palabra
 btnPalabra.addEventListener('click', async () => {
+
+    document.getElementById('departmentSelect').selectedIndex = 0;
+    document.getElementById('localSelect').selectedIndex = 0;
 
     pagina = 1
     metodos.borroGaleria();
