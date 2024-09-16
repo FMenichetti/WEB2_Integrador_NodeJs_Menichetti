@@ -17,10 +17,10 @@ export const crearCards = async(objetos) => {
 
             // Crear el contenedor principal de la card
             const cardCol = document.createElement('div');
-            cardCol.className = 'col tarj';
+            cardCol.className = 'col tarj ';
 
             const card = document.createElement('div');
-            card.className = 'card h-100 tarj-body';
+            card.className = 'card h-100 tarj-body ';
 
             // Crear el elemento img para la imagen de la card
             const img = document.createElement('img');

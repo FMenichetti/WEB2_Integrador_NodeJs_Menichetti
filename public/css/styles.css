@@ -1,24 +1,41 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
 
-
-.nav{
-    font-size: 2.5rem; /* Agranda la letra */
+/* Navbar */
+.nav {
+    font-size: 2rem; /* Agranda la letra */
     font-weight: bold; /* Estilo de título */
     color: #f6f2f2; /* Color blanco */
     font-family: 'Arial', sans-serif; /* Familia de fuente */
 }
 
-/* Clase general para las cards */
+/* Filter Form Styles */
+form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Styles */
 .tarj {
     border: none; /* Elimina el borde por defecto */
     border-radius: 15px; /* Bordes redondeados */
     overflow: hidden; /* Asegura que el contenido no sobresalga de la card */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Sombra elegante */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
+    background-color: #fff; /* Fondo blanco para las cards */
 }
 
 /* Efecto al hacer hover sobre la card */
 .tarj:hover {
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
+    transform: scale(1.02); /* Zoom suave en el hover */
 }
 
 /* Clase para las imágenes en la card */
@@ -34,10 +51,24 @@
     font-size: 1.25rem; /* Aumenta el tamaño del texto */
     font-weight: bold; /* Hacer el texto más grueso */
     color: #333; /* Color oscuro elegante */
+    margin: 15px 0; /* Espacio alrededor del título */
 }
 
 /* Clase para el texto dentro de la card */
 .tarj-text {
     color: #666; /* Texto gris claro */
     margin-bottom: 0.75rem; /* Espacio inferior */
+}
+
+/* Spinner Styles */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3em;
+}
+
+/* Error Alert Styles */
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
 }

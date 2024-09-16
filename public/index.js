@@ -154,7 +154,7 @@ btnPalabra.addEventListener('click', async () => {
 // Agrega un evento al formulario para el submit
 btnSubmit.addEventListener('click', async (event) => {
 
-    pagina = 0
+    pagina = 1
     event.preventDefault();
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);

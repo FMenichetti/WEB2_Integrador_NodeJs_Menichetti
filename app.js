@@ -38,11 +38,15 @@ app.listen(port, () => {
 
 // Ruta para obtener todos los id de departamentos para DDL//ok
 app.get('/api/traerIdDeptos', async (req, res) => {
+    console.time('traerDeptos'); 
     try {
         const url = `https://collectionapi.metmuseum.org/public/collection/v1/departments`;
         const response = await fetch(url);
         const data = await response.json();
         res.json(data.departments);
+
+        console.timeEnd('traerDeptos'); 
+
     } catch (error) {
         console.error('Error al listar departamentos:', error);
         res.status(500).json({ message: 'Error al listar departamentos' });
@@ -51,6 +55,7 @@ app.get('/api/traerIdDeptos', async (req, res) => {
 
 // Realizar búsqueda con filtros - genera url y peticion - llena listaIds local 
 app.get('/api/buscar', async (req, res) => {
+    console.time('buscar'); 
     const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '' } = req.query;
 
     // Convertir a booleanos 
@@ -93,6 +98,7 @@ app.get('/api/buscar', async (req, res) => {
         // Inicializar un array para almacenar los datos
         listaIds = data;
 
+        console.timeEnd('buscar'); 
 
     } catch (error) {
         console.error('Error al realizar la búsqueda:', error);
@@ -102,7 +108,7 @@ app.get('/api/buscar', async (req, res) => {
 
 // Luego de llenar listaIds en el metodo anterior buscar, ejecuto llamado individual, todo en el back
 app.get('/api/traerMuseosBack', async (req, res) => {
-
+console.time('traerMuseosBack')
     const pagina = parseInt(req.query.pagina, 10);
     console.log(pagina)
     try {
@@ -110,19 +116,19 @@ app.get('/api/traerMuseosBack', async (req, res) => {
 
         switch (pagina) {
             case 1:
-                deptosPaginados = listaIds.objectIDs.slice(0, 2000);
+                deptosPaginados = listaIds.objectIDs.slice(0, 1000);
                 break;
             case 2:
-                deptosPaginados = listaIds.objectIDs.slice(2000, 4000);
+                deptosPaginados = listaIds.objectIDs.slice(1000, 2000);
                 break;
             case 3:
-                deptosPaginados = listaIds.objectIDs.slice(4000, 6000);
+                deptosPaginados = listaIds.objectIDs.slice(2000, 3000);
                 break;
             case 4:
-                deptosPaginados = listaIds.objectIDs.slice(6000, 8000);
+                deptosPaginados = listaIds.objectIDs.slice(3000, 4000);
                 break;
             case 5:
-                deptosPaginados = listaIds.objectIDs.slice(8000, 10000);
+                deptosPaginados = listaIds.objectIDs.slice(4000, 5000);
                 break;
             default:
                 console.log('Página fuera de rango');
@@ -130,30 +136,42 @@ app.get('/api/traerMuseosBack', async (req, res) => {
         }
 
         //console.log(storedData)
-        for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
-            const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-            //console.log(objectUrl)
-            const objectResponse = await fetch(objectUrl);
-            const objectData = await objectResponse.json();
-            //console.log(objectData)
 
-            if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
-                deptos.push(objectData);
-            }
+        //Este FOR tarda 5seg mas que el metodo Fetch
+        // for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
+        //     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+        //     //console.log(objectUrl)
+        //     const objectResponse = await fetch(objectUrl);
+        //     const objectData = await objectResponse.json();
+        //     //console.log(objectData)
 
-            if (deptos.length >= 20) {
-                break;
-            }
-        }
+        //     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
+        //         deptos.push(objectData);
+        //     }
+
+        //     if (deptos.length >= 20) {
+        //         break;
+        //     }
+        // }
+
+        // test promiseAll
+        deptos = await fetchIndividual(deptosPaginados);
+        //console.log(results)
 
         ////////////////Probando traduccion
         // Traducir las propiedades title, culture y dynasty de cada objeto
         const deptosTraducidos = await Promise.all(
             deptos.map(async (objeto) => {
+                // función para manejar los campos vacios
+                const traducirSiNoVacio = async (texto) => {
+                    return texto ? await traducirTexto(texto) : texto;
+                };
+
+                // Traducir solo si el texto no está vacío
                 const [titleTraducido, cultureTraducido, dynastyTraducido] = await Promise.all([
-                    traducirTexto(objeto.title),
-                    traducirTexto(objeto.culture),
-                    traducirTexto(objeto.dynasty)
+                    traducirSiNoVacio(objeto.title),
+                    traducirSiNoVacio(objeto.culture),
+                    traducirSiNoVacio(objeto.dynasty)
                 ]);
 
                 return {
@@ -164,6 +182,8 @@ app.get('/api/traerMuseosBack', async (req, res) => {
                 };
             })
         );
+
+        console.timeEnd('traerMuseosBack')
 
         //console.log(deptosTraducidos)
         res.json(deptosTraducidos);
@@ -185,7 +205,7 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
             source: sourceLang,
             target: targetLang
         });
-        
+
         return result.translation; // Devolver la traducción
     } catch (error) {
         console.error('Error al traducir:', error);
@@ -194,9 +214,44 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
 };
 
 
+/////Probando mejorar tiempos con consultas multiples//////////////////////////
+/////8.5segundos
+const fetchIndividual = async (deptosPaginados) => {
+    console.time('fetchObjects');  // Inicia el temporizador
+    const promises = deptosPaginados.map(async (id) => {
+        const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+        try {
+            const response = await fetch(objectUrl);
+            
+            // Verifica si el estado de la respuesta es 200 OK
+            if (!response.ok) {
+                console.error(`Error al obtener el objeto con ID ${id}: ${response.statusText}`);
+                return null; // Retorna null para que este objeto no se incluya en el resultado
+            }
+
+            const objectData = await response.json();
+
+            // Retorna el objeto solo si tiene una imagen, de lo contrario retorna null
+            return objectData.primaryImageSmall !== '' ? objectData : null;
+        } catch (error) {
+            console.error(`Error al procesar el objeto con ID ${id}:`, error);
+            return null; // En caso de error, retornar null
+        }
+    });
+
+    // Esperar a que todas las promesas se resuelvan
+    const results = await Promise.all(promises);
+
+    // Filtrar los resultados no nulos (los que sí tienen imagen)
+    const deptos = results.filter(obj => obj !== null);
+
+    console.timeEnd('fetchObjects'); 
+    // Limitar a 20 objetos
+    return deptos.slice(0, 20);
+};
 
 
-
+//////////////////////////////////////////////////////////////
 
 
 
