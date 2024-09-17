@@ -22,6 +22,7 @@ app.use(express.json());
 
 // Middleware para servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
+console.log('fff')
 
 // Ruta para servir el archivo HTML principal
 app.get("/", (req, res) => {
