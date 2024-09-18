@@ -10,7 +10,7 @@ let textLocal;
 //Traigo los departamentos y los agrego a la ddl
 export const traerIdDeptos = async () => {
     //Obtengo los Objetos de los departamentos
-    const url = `http://localhost:3000/api/traerIdDeptos`;
+    const url = `/api/traerIdDeptos`;
 
     try {
         //Nombre de departamentos para llenar DDL
@@ -38,7 +38,7 @@ export const traerIdDeptos = async () => {
 }
 //Traigo los museos del back
 export const traerMuseosBack = async( pagina = 1 ) => {
-    const apiUrl = `http://localhost:3000/api/traerMuseosBack?pagina=${ pagina }`;
+    const apiUrl = `/api/traerMuseosBack?pagina=${ pagina }`;
     try {
         const response = await fetch(apiUrl);
 
@@ -60,19 +60,19 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) =
     let url = '';
 
     if (filtro1 && filtro2 && filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=true&filtro2=true&filtro3=true&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
+        url = `/api/buscar?filtro1=true&filtro2=true&filtro3=true&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
     } else if (filtro1 && filtro2 && !filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=true&filtro2=true&filtro3=false&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
+        url = `/api/buscar?filtro1=true&filtro2=true&filtro3=false&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
     } else if (filtro1 && !filtro2 && filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=true&filtro2=false&filtro3=true&palabra=${palabra}&depto=${depto}`;
+        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=true&palabra=${palabra}&depto=${depto}`;
     } else if (filtro1 && !filtro2 && !filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}`;
+        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}`;
     } else if (!filtro1 && filtro2 && filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=false&filtro2=true&filtro3=true&local=${local}&palabra=${palabra}`;
+        url = `/api/buscar?filtro1=false&filtro2=true&filtro3=true&local=${local}&palabra=${palabra}`;
     } else if (!filtro1 && filtro2 && !filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=false&filtro2=true&filtro3=false&local=${local}&palabra=''`;
+        url = `/api/buscar?filtro1=false&filtro2=true&filtro3=false&local=${local}&palabra=''`;
     } else if (!filtro1 && !filtro2 && filtro3) {
-        url = `http://localhost:3000/api/buscar?filtro1=false&filtro2=false&filtro3=true&palabra=${palabra}`;
+        url = `/api/buscar?filtro1=false&filtro2=false&filtro3=true&palabra=${palabra}`;
     } else if (!filtro1 && !filtro2 && !filtro3) {
         return []; // Ningún filtro seleccionado
     }
@@ -150,7 +150,7 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
 
 //         for (let id of obj) {
 //             //console.log(id)
-//             const url = `http://localhost:3000/api/traerMuseosConId?ids=${id}`;
+//             const url = `/api/traerMuseosConId?ids=${id}`;
 //             const respuesta = await fetch(url);
 //             const data = await respuesta.json();
             
@@ -177,7 +177,7 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
  */
 // export const listarIdFiltrados = async (id) => {
 //     try {
-//         const url = `http://localhost:3000/api/individual/${id}`;
+//         const url = `/api/individual/${id}`;
 //         const respuesta = await fetch(url);
 //         const data = await respuesta.json();
 
