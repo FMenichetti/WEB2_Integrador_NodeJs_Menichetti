@@ -29,33 +29,33 @@ metodos.mostrarErrorFiltrosVacios(0);
 
 
 //Carga de DDL y carga de array de dtos//ok
-// (async () => {
-//     try {
-//         await consultasBack.traerIdDeptos();
-//     } catch (error) {
-//         console.error('Error al cargar los departamentos:', error);
-//     }
-// })();
+(async () => {
+    try {
+        await consultasBack.traerIdDeptos();
+    } catch (error) {
+        console.error('Error al cargar los departamentos:', error);
+    }
+})();
 
 
 //Carga de location de array local
-// (async () => {
-//     const elemLocal = document.getElementById('localSelect');//id de select
-//     let cont = 0;
+(async () => {
+    const elemLocal = document.getElementById('localSelect');//id de select
+    let cont = 0;
 
-//     for (const local of listaLocal) {
-//         const option = document.createElement('option');
+    for (const local of listaLocal) {
+        const option = document.createElement('option');
 
-//         // Tomo el nombre para el DDL
-//         option.textContent = local;
+        // Tomo el nombre para el DDL
+        option.textContent = local;
 
-//         // Le agrego el valor de ID a la opcion
-//         option.value = local;
-//         cont++
-//         // Agrego la opción al select
-//         elemLocal.appendChild(option);
-//     }
-// })();
+        // Le agrego el valor de ID a la opcion
+        option.value = local;
+        cont++
+        // Agrego la opción al select
+        elemLocal.appendChild(option);
+    }
+})();
 
 //Escucho los cambios de estado en los rb
 rbIndividual.addEventListener('change', metodos.elijoFiltro);
