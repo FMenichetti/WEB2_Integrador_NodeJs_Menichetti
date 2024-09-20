@@ -2,9 +2,9 @@
   "name": "integrador-menichetti-franco",
   "version": "1.0.0",
   "type": "module",
-  "main": "app.js", 
+  "main": "index.js", 
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
