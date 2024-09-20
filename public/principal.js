@@ -2,7 +2,7 @@ import * as consultasBack from './js/consultasBack.js';
 import * as metodos from './js/metodos.js';
 import * as card from './js/card.js';
 
-
+console.log('andando')
 
 // Variables globales
 let indice;
@@ -29,70 +29,33 @@ metodos.mostrarErrorFiltrosVacios(0);
 
 
 //Carga de DDL y carga de array de dtos//ok
-(async () => {
-    try {
-        await consultasBack.traerIdDeptos();
-    } catch (error) {
-        console.error('Error al cargar los departamentos:', error);
-    }
-})();
+// (async () => {
+//     try {
+//         await consultasBack.traerIdDeptos();
+//     } catch (error) {
+//         console.error('Error al cargar los departamentos:', error);
+//     }
+// })();
 
-//Carga de DDL de Location con consulta, esta sin usar////activar en caso de usar
-// (async () => {  ///////////////no la hice, la url ver que onda
 
+//Carga de location de array local
+// (async () => {
+//     const elemLocal = document.getElementById('localSelect');//id de select
 //     let cont = 0;
 
-//     try {
-//         // Realiza la solicitud a la API
-//         const url = `http://localhost:3000/api/traerLocal`;
-//         const response = await fetch(url);
+//     for (const local of listaLocal) {
+//         const option = document.createElement('option');
 
-//         // Verifica si la respuesta es exitosa
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
+//         // Tomo el nombre para el DDL
+//         option.textContent = local;
 
-//         // Convierte la respuesta a JSON
-//        const data = await response.json();
-
-//        const elemLocal = document.getElementById('localSelect');//id de select
-
-//         for (const local of data) {
-//             const option = document.createElement('option');
-
-//             // Tomo el nombre para el DDL
-//             option.textContent = local.displayName;
-
-//             // Le agrego el valor de ID a la opcion
-//             option.value = cont;
-//             cont++
-//             // Agrego la opción al select
-//             elemLocal.appendChild(option);
-//         }
-
-       
-//     } catch (error) {
-//         console.error('Hubo un problema con la solicitud:', error);
+//         // Le agrego el valor de ID a la opcion
+//         option.value = local;
+//         cont++
+//         // Agrego la opción al select
+//         elemLocal.appendChild(option);
 //     }
-// });
-//Carga de location de array local
-(async () => {
-    const elemLocal = document.getElementById('localSelect');//id de select
-    let cont = 0;
-
-    for (const local of listaLocal) {
-        const option = document.createElement('option');
-
-        // Tomo el nombre para el DDL
-        option.textContent = local;
-
-        // Le agrego el valor de ID a la opcion
-        option.value = local;
-        cont++
-        // Agrego la opción al select
-        elemLocal.appendChild(option);
-    }
-})();
+// })();
 
 //Escucho los cambios de estado en los rb
 rbIndividual.addEventListener('change', metodos.elijoFiltro);
@@ -118,6 +81,7 @@ btnDepto.addEventListener('click', async () => {
     
     await consultasBack.runBusqueda( pagina );
 })
+
 //Buscar por Location
 btnLocation.addEventListener('click', async () => {
 
@@ -209,3 +173,44 @@ btnAnterior.addEventListener('click', async() => {
     metodos.btnPaginacion( pagina );
 
 });
+
+
+
+//Carga de DDL de Location con consulta, esta sin usar////activar en caso de usar
+// (async () => {  ///////////////no la hice, la url ver que onda
+
+//     let cont = 0;
+
+//     try {
+//         // Realiza la solicitud a la API
+//         const url = `http://localhost:3000/api/traerLocal`;
+//         const response = await fetch(url);
+
+//         // Verifica si la respuesta es exitosa
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+
+//         // Convierte la respuesta a JSON
+//        const data = await response.json();
+
+//        const elemLocal = document.getElementById('localSelect');//id de select
+
+//         for (const local of data) {
+//             const option = document.createElement('option');
+
+//             // Tomo el nombre para el DDL
+//             option.textContent = local.displayName;
+
+//             // Le agrego el valor de ID a la opcion
+//             option.value = cont;
+//             cont++
+//             // Agrego la opción al select
+//             elemLocal.appendChild(option);
+//         }
+
+       
+//     } catch (error) {
+//         console.error('Hubo un problema con la solicitud:', error);
+//     }
+// });
