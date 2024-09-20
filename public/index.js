@@ -1,6 +1,9 @@
 import * as consultasBack from './js/consultasBack.js';
 import * as metodos from './js/metodos.js';
 import * as card from './js/card.js';
+
+
+
 // Variables globales
 let indice;
 let palabra;

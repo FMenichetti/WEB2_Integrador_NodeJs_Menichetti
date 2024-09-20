@@ -1,7 +1,19 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const translate = require('node-google-translate-skidz');
+// const express = require('express');
+// const cors = require('cors');
+// const path = require('path');
+// const translate = require('node-google-translate-skidz');
+
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import translate from 'node-google-translate-skidz';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 //Variables
 let listaIds = [];
@@ -110,6 +122,7 @@ app.get('/api/buscar', async (req, res) => {
 app.get('/api/traerMuseosBack', async (req, res) => {
 console.time('traerMuseosBack')
     const pagina = parseInt(req.query.pagina, 10);
+    let deptosPaginados = [];
     console.log(pagina)
     try {
         let deptos = [];
