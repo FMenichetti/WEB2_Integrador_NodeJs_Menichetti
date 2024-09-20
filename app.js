@@ -6,7 +6,7 @@ const translate = require('node-google-translate-skidz');
 //Variables
 let listaIds = [];
 
-// Importar fetch dinámicamente como ES module
+// Importar fetch dinámicamente 
 let fetch;
 (async () => {
     const module = await import('node-fetch');
