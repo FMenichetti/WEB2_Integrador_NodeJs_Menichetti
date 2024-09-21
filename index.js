@@ -33,7 +33,8 @@ app.use(cors());
 app.use(express.json());
 
 // Middleware para servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + '/public/'));
 
 // Ruta para servir el archivo HTML principal
 app.get("/", (req, res) => {
