@@ -27,6 +27,19 @@ const btnSiguiente = document.getElementById('btnSiguiente');
 metodos.mostrarSpinner(0);
 metodos.mostrarErrorFiltrosVacios(0);
 
+//Si vengo de img extras recuero ultima pagina
+
+if ( localStorage.getItem('ultimaPagina') ) {
+    console.log('siii hay elementos')
+    const obj = metodos.recuperarUltimaPagina()
+    card.crearCards( obj )
+} else {
+    console.log('No hay datos guardados en localStorage.');
+}
+
+
+
+
 
 //Carga de DDL y carga de array de dtos//ok
 (async () => {
@@ -61,7 +74,7 @@ metodos.mostrarErrorFiltrosVacios(0);
 rbIndividual.addEventListener('change', metodos.elijoFiltro);
 rbAnidado.addEventListener('change', metodos.elijoFiltro);
 
-//Buscar por depto individual
+//Buscar por depto individual usa RUN
 btnDepto.addEventListener('click', async () => {
 
     document.getElementById('localSelect').selectedIndex = 0;
@@ -82,7 +95,7 @@ btnDepto.addEventListener('click', async () => {
     await consultasBack.runBusqueda( pagina );
 })
 
-//Buscar por Location
+//Buscar por Location usa RUN
 btnLocation.addEventListener('click', async () => {
 
     document.getElementById('departmentSelect').selectedIndex = 0;
@@ -103,7 +116,7 @@ btnLocation.addEventListener('click', async () => {
 
     await consultasBack.runBusqueda( pagina );
 })
-//Buscar por palabra
+//Buscar por palabra usa RUN
 btnPalabra.addEventListener('click', async () => {
 
     document.getElementById('departmentSelect').selectedIndex = 0;
@@ -126,7 +139,7 @@ btnPalabra.addEventListener('click', async () => {
 
 })
 
-// Agrega un evento al formulario para el submit
+// Agrega un evento al formulario para el submit usa RUN
 btnSubmit.addEventListener('click', async (event) => {
 
     pagina = 1
@@ -139,14 +152,14 @@ btnSubmit.addEventListener('click', async (event) => {
     
 
 })
-//Paginacion eventos
+//Paginacion siguiente eventos usa TMB
 btnSiguiente.addEventListener('click', async () => {
 
     pagina ++;
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
-
+console.log( pagina )
     const datosBack = await consultasBack.traerMuseosBack( pagina );
     
     card.crearCards(datosBack)
@@ -156,14 +169,14 @@ btnSiguiente.addEventListener('click', async () => {
     metodos.btnPaginacion( pagina );
 
 });
-
+//Paginacion anterior eventos usa TMB
 btnAnterior.addEventListener('click', async() => {
     
     pagina --;
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
-
+    console.log( pagina )
     const datosBack = await consultasBack.traerMuseosBack( pagina );
     
     card.crearCards(datosBack)
@@ -175,42 +188,3 @@ btnAnterior.addEventListener('click', async() => {
 });
 
 
-
-//Carga de DDL de Location con consulta, esta sin usar////activar en caso de usar
-// (async () => {  ///////////////no la hice, la url ver que onda
-
-//     let cont = 0;
-
-//     try {
-//         // Realiza la solicitud a la API
-//         const url = `http://localhost:3000/api/traerLocal`;
-//         const response = await fetch(url);
-
-//         // Verifica si la respuesta es exitosa
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-
-//         // Convierte la respuesta a JSON
-//        const data = await response.json();
-
-//        const elemLocal = document.getElementById('localSelect');//id de select
-
-//         for (const local of data) {
-//             const option = document.createElement('option');
-
-//             // Tomo el nombre para el DDL
-//             option.textContent = local.displayName;
-
-//             // Le agrego el valor de ID a la opcion
-//             option.value = cont;
-//             cont++
-//             // Agrego la opción al select
-//             elemLocal.appendChild(option);
-//         }
-
-       
-//     } catch (error) {
-//         console.error('Hubo un problema con la solicitud:', error);
-//     }
-// });

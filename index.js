@@ -17,6 +17,7 @@ const __dirname = dirname(__filename);
 
 //Variables
 let listaIds = [];
+let deptosTraducidos = [];
 
 // Importar fetch dinámicamente 
 let fetch;
@@ -49,16 +50,21 @@ app.listen(port, () => {
     console.log(`Servidor funcionando en el puerto ${port}`);
 });
 
+// Endpoint para obtener el array de elementos buscados en caso de volver de pagina
+app.get('/api/listaTraducuda', (req, res) => {
+    res.json(deptosTraducidos);  // Envía el array como JSON
+});
+
 // Ruta para obtener todos los id de departamentos para DDL//ok
 app.get('/api/traerIdDeptos', async (req, res) => {
-    console.time('traerDeptos'); 
+    console.time('traerDeptos');
     try {
         const url = `https://collectionapi.metmuseum.org/public/collection/v1/departments`;
         const response = await fetch(url);
         const data = await response.json();
         res.json(data.departments);
 
-        console.timeEnd('traerDeptos'); 
+        console.timeEnd('traerDeptos');
 
     } catch (error) {
         console.error('Error al listar departamentos:', error);
@@ -68,41 +74,46 @@ app.get('/api/traerIdDeptos', async (req, res) => {
 
 // Realizar búsqueda con filtros - genera url y peticion - llena listaIds local 
 app.get('/api/buscar', async (req, res) => {
-    console.time('buscar'); 
-    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '' } = req.query;
+    console.time('buscar');
+    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '', extra  } = req.query;
+
+    console.log(req.query)
 
     // Convertir a booleanos 
     let f1 = filtro1 === 'true';
     let f2 = filtro2 === 'true';
     let f3 = filtro3 === 'true';
 
+    console.log(extra)
+
     let url = '';
-    console.log(f1)
-    console.log(f2)
-    console.log(f3)
-    console.log(depto)
-    console.log(local)
-    console.log(palabra)
+    // console.log(f1)
+    // console.log(f2)
+    // console.log(f3)
+    // console.log(depto)
+    // console.log(local)
+    // console.log(palabra)
     if (f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=*&DepartmentId=${depto}`;
     } else if (f1 && !f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && !f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?hasImages=true&DepartmentId=${depto}&q=${extra}`;//
     } else if (!f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}`;
     } else if (!f1 && f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=*`;
     } else if (!f1 && !f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}`;
     } else if (!f1 && !f2 && !f3) {
         return res.json([]); // Ningún filtro seleccionado
     }
 
     try {
         console.log(url + '//////')
+        listaIds = [];
         const response = await fetch(url);
         const data = await response.json();
         res.json(data);
@@ -110,8 +121,9 @@ app.get('/api/buscar', async (req, res) => {
         //probando
         // Inicializar un array para almacenar los datos
         listaIds = data;
+        console.log('largo de lista ' + listaIds.objectIDs.length)
 
-        console.timeEnd('buscar'); 
+        console.timeEnd('buscar');
 
     } catch (error) {
         console.error('Error al realizar la búsqueda:', error);
@@ -121,7 +133,7 @@ app.get('/api/buscar', async (req, res) => {
 
 // Luego de llenar listaIds en el metodo anterior buscar, ejecuto llamado individual, todo en el back
 app.get('/api/traerMuseosBack', async (req, res) => {
-console.time('traerMuseosBack')
+    console.time('traerMuseosBack')
     const pagina = parseInt(req.query.pagina, 10);
     let deptosPaginados = [];
     console.log(pagina)
@@ -130,19 +142,19 @@ console.time('traerMuseosBack')
 
         switch (pagina) {
             case 1:
-                deptosPaginados = listaIds.objectIDs.slice(0, 1000);
+                deptosPaginados = listaIds.objectIDs.slice(0, 200);
                 break;
             case 2:
-                deptosPaginados = listaIds.objectIDs.slice(1000, 2000);
+                deptosPaginados = listaIds.objectIDs.slice(1000, 1200);
                 break;
             case 3:
-                deptosPaginados = listaIds.objectIDs.slice(2000, 3000);
+                deptosPaginados = listaIds.objectIDs.slice(2000, 2200);
                 break;
             case 4:
-                deptosPaginados = listaIds.objectIDs.slice(3000, 4000);
+                deptosPaginados = listaIds.objectIDs.slice(3000, 3200);
                 break;
             case 5:
-                deptosPaginados = listaIds.objectIDs.slice(4000, 5000);
+                deptosPaginados = listaIds.objectIDs.slice(4000, 4200);
                 break;
             default:
                 console.log('Página fuera de rango');
@@ -174,10 +186,11 @@ console.time('traerMuseosBack')
 
         ////////////////Probando traduccion
         // Traducir las propiedades title, culture y dynasty de cada objeto
-        const deptosTraducidos = await Promise.all(
+        deptosTraducidos = await Promise.all(
             deptos.map(async (objeto) => {
                 // función para manejar los campos vacios
                 const traducirSiNoVacio = async (texto) => {
+                    //Si existe traduzco, sino no
                     return texto ? await traducirTexto(texto) : texto;
                 };
 
@@ -219,7 +232,6 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
             source: sourceLang,
             target: targetLang
         });
-
         return result.translation; // Devolver la traducción
     } catch (error) {
         console.error('Error al traducir:', error);
@@ -231,12 +243,12 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
 /////Probando mejorar tiempos con consultas multiples//////////////////////////
 /////8.5segundos
 const fetchIndividual = async (deptosPaginados) => {
-    console.time('fetchObjects');  // Inicia el temporizador
+    //console.time('fetchObjects');  // Inicia el temporizador
     const promises = deptosPaginados.map(async (id) => {
         const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
         try {
             const response = await fetch(objectUrl);
-            
+
             // Verifica si el estado de la respuesta es 200 OK
             if (!response.ok) {
                 //console.error(`Error al obtener el objeto con ID ${id}: ${response.statusText}`);
@@ -259,7 +271,7 @@ const fetchIndividual = async (deptosPaginados) => {
     // Filtrar los resultados no nulos (los que sí tienen imagen)
     const deptos = results.filter(obj => obj !== null);
 
-    console.timeEnd('fetchObjects'); 
+    //console.timeEnd('fetchObjects'); 
     // Limitar a 20 objetos
     return deptos.slice(0, 20);
 };

@@ -4,8 +4,10 @@
 const params = new URLSearchParams(window.location.search);
 const objetoStr = params.get('objeto');
 
+
 // Decodificar y convertir a un objeto JavaScript
 const objeto = JSON.parse(decodeURIComponent(objetoStr));
+
 
 // Mostrar el título del objeto
 const titulo = document.getElementById('title');
@@ -25,4 +27,10 @@ objeto.additionalImages.forEach(image => {
     col.appendChild(img);
     imagenesDiv.appendChild(col);
 
+});
+
+const btnVolver = document.getElementById('btnVolver')
+
+btnVolver.addEventListener('click', ( ) => {
+    window.location.href = `/`; // Redirige a la página anterior con el número como parámetro
 });

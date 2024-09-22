@@ -81,5 +81,15 @@ export const btnPaginacion = (pagina = 1) => {
         btnSiguiente.style.display = 'block';
     }
 }
+//Guardar ultima pagina
+export function guardarUltimaPagina(datos) {
+    localStorage.setItem('ultimaPagina', JSON.stringify(datos));
+}
+//Recuperar ultima pagina
+export function recuperarUltimaPagina() {
+    const datosGuardados = localStorage.getItem('ultimaPagina');
+    return datosGuardados ? JSON.parse(datosGuardados) : null;
+}
+
 
 

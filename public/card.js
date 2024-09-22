@@ -1,8 +1,13 @@
 
 
 // Función para crear y agregar las cards al contenedor
-export const crearCards = async(objetos) => {
 
+import * as metodo from "./metodos.js";
+
+//recibo el objeto a pintar y la pagina actual para pasarla al volver de la pagina de extras
+export const crearCards = async( objetos ) => {
+
+localStorage.clear();
 
     const gallery = document.getElementById('gallery');
 
@@ -61,6 +66,7 @@ export const crearCards = async(objetos) => {
                 btnVerMas.textContent = 'Ver más imágenes';
                 btnVerMas.onclick = function () {
                     // convierto obj en url Json
+                    metodo.guardarUltimaPagina( objetos )
                     const objetoStr = encodeURIComponent(JSON.stringify(objeto));
 
                     // redirijo al html img-adicionales
@@ -81,6 +87,7 @@ export const crearCards = async(objetos) => {
             gallery.appendChild(cardCol);
         });
     }
+
 }
 
 

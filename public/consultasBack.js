@@ -3,6 +3,7 @@ import * as metodos from './metodos.js';
 
 // Variables globales
 let indice;
+let extra;
 let palabra;
 let indiceLocal;
 let textLocal;
@@ -38,6 +39,10 @@ export const traerIdDeptos = async () => {
 }
 //Traigo los museos del back
 export const traerMuseosBack = async( pagina = 1 ) => {
+
+//limpio storage
+localStorage.clear()
+
     const apiUrl = `/api/traerMuseosBack?pagina=${ pagina }`;
     try {
         const response = await fetch(apiUrl);
@@ -55,9 +60,20 @@ export const traerMuseosBack = async( pagina = 1 ) => {
     }
 }
 //Genero la url y la mando al back
-export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) => {
+export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra, extra) => {
 
     let url = '';
+
+    const corte = () => {
+        if (extra.toLowerCase().startsWith("the")) {
+            return extra.substring(4, 9); // Corta desde la 5ta letra hasta la 9na
+        } else {
+            return extra.substring(0, 4); // Corta las primeras 4 letras
+        }
+    }
+
+    // extra = corte();
+    console.log(extra + '////filtro')
 
     if (filtro1 && filtro2 && filtro3) {
         url = `/api/buscar?filtro1=true&filtro2=true&filtro3=true&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
@@ -66,7 +82,7 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) =
     } else if (filtro1 && !filtro2 && filtro3) {
         url = `/api/buscar?filtro1=true&filtro2=false&filtro3=true&palabra=${palabra}&depto=${depto}`;
     } else if (filtro1 && !filtro2 && !filtro3) {
-        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}`;
+        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}&extra=${extra}`;//
     } else if (!filtro1 && filtro2 && filtro3) {
         url = `/api/buscar?filtro1=false&filtro2=true&filtro3=true&local=${local}&palabra=${palabra}`;
     } else if (!filtro1 && filtro2 && !filtro3) {
@@ -88,8 +104,13 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) =
 };
 
 export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de filtro y buscar museos por id
+    //limpio storage
+    localStorage.clear();
+    
     //Elementos html
     indice = document.getElementById('departmentSelect').selectedIndex;
+    extra = document.getElementById('departmentSelect').options[indice].text;
+    console.log(extra)
     indiceLocal = document.getElementById('localSelect').selectedIndex;
     textLocal = document.getElementById('localSelect').value;
     palabra = document.getElementById('inputPalabra').value;
@@ -117,12 +138,12 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
         metodos.mostrarErrorFiltrosVacios(0);
     }
     //obtengo array de ids pero los manejo en el back
-     await filtro(filtro1, filtro2, filtro3, indice, textLocal, palabra);
+     await filtro(filtro1, filtro2, filtro3, indice, textLocal, palabra, extra);
     
     const datosBack = await traerMuseosBack( pagina );
     
     //console.log('Datos obtenidos:', datosBack);
-    card.crearCards(datosBack)
+    card.crearCards(datosBack, pagina)
 
     metodos.mostrarSpinner(0);
     //metodos.limpiarFiltros();
