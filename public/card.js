@@ -62,7 +62,7 @@ localStorage.clear();
             // Si hay más imágenes, agregar un botón
             if (objeto.additionalImages && objeto.additionalImages.length > 0) {
                 const btnVerMas = document.createElement('button');
-                btnVerMas.className = 'btn btn-primary mt-2';
+                btnVerMas.className = 'btn btn-outline-secondary mt-2';
                 btnVerMas.textContent = 'Ver más imágenes';
                 btnVerMas.onclick = function () {
                     // convierto obj en url Json

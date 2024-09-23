@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #be9eb7;
     margin: 0;
     padding: 0;
 }
@@ -10,54 +10,57 @@ body {
 .nav {
     font-size: 2rem; /* Agranda la letra */
     font-weight: bold; /* Estilo de título */
-    color: #f6f2f2; /* Color blanco */
-    font-family: 'Arial', sans-serif; /* Familia de fuente */
+    color: #f8f9fa; /* Texto blanco */
+    background-color: #4b000e; /* Bordó oscuro para mayor contraste */
+    font-family: 'Arial', sans-serif;
+    padding: 10px;
 }
 
 /* Filter Form Styles */
 form {
-    background-color: #ffffff;
+    background-color: #f0e1e1; /* Fondo bordó claro */
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #800020; /* Borde bordó */
 }
 
 /* Card Styles */
 .tarj {
-    border: none; /* Elimina el borde por defecto */
-    border-radius: 15px; /* Bordes redondeados */
-    overflow: hidden; /* Asegura que el contenido no sobresalga de la card */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Sombra elegante */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave */
-    background-color: #fff; /* Fondo blanco para las cards */
+    border: 1px solid #4b000e; /* Bordó oscuro para contraste */
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fceaea; /* Bordó claro suave */
 }
 
 /* Efecto al hacer hover sobre la card */
 .tarj:hover {
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
-    transform: scale(1.02); /* Zoom suave en el hover */
+    box-shadow: 0 10px 15px rgba(75, 0, 14, 0.4), 0 4px 6px rgba(75, 0, 14, 0.4); /* Sombra bordó oscuro */
+    transform: scale(1.03); /* Zoom suave en el hover */
 }
 
 /* Clase para las imágenes en la card */
 .tarj img {
-    border-top-left-radius: 15px; /* Asegura que las esquinas de la imagen sean redondeadas */
+    border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    height: 200px; /* Ajusta la altura de la imagen */
-    object-fit: cover; /* Asegura que la imagen mantenga su proporción */
+    height: 200px;
+    object-fit: cover;
 }
 
 /* Clase para el título de la card */
 .tarj-title {
-    font-size: 1.25rem; /* Aumenta el tamaño del texto */
-    font-weight: bold; /* Hacer el texto más grueso */
-    color: #333; /* Color oscuro elegante */
-    margin: 15px 0; /* Espacio alrededor del título */
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #800020; /* Bordó clásico para el título */
+    margin: 15px 0;
 }
 
 /* Clase para el texto dentro de la card */
 .tarj-text {
-    color: #666; /* Texto gris claro */
-    margin-bottom: 0.75rem; /* Espacio inferior */
+    color: #4b000e; /* Bordó oscuro para el texto */
+    margin-bottom: 0.75rem;
 }
 
 /* Spinner Styles */
@@ -65,10 +68,43 @@ form {
     width: 3rem;
     height: 3rem;
     border-width: 0.3em;
+    color: #800020; /* Spinner bordó clásico */
 }
 
 /* Error Alert Styles */
 .alert-danger {
     background-color: #f8d7da;
     color: #721c24;
+    border-color: #4b000e; /* Borde bordó oscuro */
+}
+
+/* Botón volver */
+#btnVolver {
+    background-color: #800020; /* Fondo bordó clásico */
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#btnVolver:hover {
+    background-color: #4b000e; /* Fondo bordó oscuro */
+    color: #ffffff;
+}
+
+.espacio {
+    height: 100px;
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 0px; /* Initially hide it below the viewport */
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    transition: bottom 0.3s ease; /* Smooth transition */
+}
+
+.footer.show {
+    bottom: 0; /* Show when scrolled to bottom */
 }
