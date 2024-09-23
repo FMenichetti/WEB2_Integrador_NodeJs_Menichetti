@@ -22,7 +22,7 @@ objeto.additionalImages.forEach(image => {
 
     const img = document.createElement('img');
     img.src = image;
-    img.className = 'img-fluid';
+    img.className = 'img-fluid img-extra';
 
     col.appendChild(img);
     imagenesDiv.appendChild(col);

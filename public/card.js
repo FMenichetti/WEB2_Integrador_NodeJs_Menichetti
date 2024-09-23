@@ -29,7 +29,7 @@ localStorage.clear();
 
             // Crear el elemento img para la imagen de la card
             const img = document.createElement('img');
-            img.className = 'card-img-top tarj';
+            img.className = 'card-img-top tarj mt-1';
             img.src = objeto.primaryImage || 'https://via.placeholder.com/150';
             img.title = objeto.objectDate || 'Fecha sin data';
 
@@ -62,7 +62,7 @@ localStorage.clear();
             // Si hay más imágenes, agregar un botón
             if (objeto.additionalImages && objeto.additionalImages.length > 0) {
                 const btnVerMas = document.createElement('button');
-                btnVerMas.className = 'btn btn-outline-secondary mt-2';
+                btnVerMas.className = 'btn btn-dark mt-2';
                 btnVerMas.textContent = 'Ver más imágenes';
                 btnVerMas.onclick = function () {
                     // convierto obj en url Json
