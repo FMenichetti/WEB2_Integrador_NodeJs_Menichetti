@@ -90,7 +90,7 @@ app.get('/api/buscar', async (req, res) => {
     } else if (f1 && !f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && !f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?hasImages=true&DepartmentId=${depto}`;//
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=*&DepartmentId=${depto}`;//
     } else if (!f1 && f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}`;
     } else if (!f1 && f2 && !f3) {
@@ -104,6 +104,7 @@ app.get('/api/buscar', async (req, res) => {
     try {
         //limpio la lista en caso de hacer nueva consulta
         listaIds = [];
+        console.log('url: ' + url)
         const response = await fetch(url);
         const data = await response.json();
         res.json(data);
