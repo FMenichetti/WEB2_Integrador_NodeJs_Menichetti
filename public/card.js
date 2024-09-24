@@ -1,13 +1,10 @@
 
-
-// Función para crear y agregar las cards al contenedor
-
 import * as metodo from "./metodos.js";
 
-//recibo el objeto a pintar y la pagina actual para pasarla al volver de la pagina de extras
-export const crearCards = async( objetos ) => {
-
-localStorage.clear();
+//recibo el objeto a pintar 
+export const crearCards = async (objetos) => {
+    //limpio el storage
+    localStorage.clear();
 
     const gallery = document.getElementById('gallery');
 
@@ -20,38 +17,37 @@ localStorage.clear();
 
         objetos.forEach(objeto => {
 
-            // Crear el contenedor principal de la card
+            // creo el contenedor principal de la card
             const cardCol = document.createElement('div');
             cardCol.className = 'col tarj ';
 
             const card = document.createElement('div');
             card.className = 'card h-100 tarj-body ';
 
-            // Crear el elemento img para la imagen de la card
+            // Creo el elemento img para la imagen de la card
             const img = document.createElement('img');
             img.className = 'card-img-top tarj mt-1';
             img.src = objeto.primaryImage || 'https://via.placeholder.com/150';
             img.title = objeto.objectDate || 'Fecha sin data';
 
-            // Crear el cuerpo de la card
+            // Creo el cuerpo de la card
             const cardBody = document.createElement('div');
             cardBody.className = 'card-body tarj-body';
 
-            // Crear el título de la card
+            // creo el título de la card
             const cardTitle = document.createElement('h5');
             cardTitle.className = 'card-title tarj-title';
             cardTitle.textContent = objeto.title;
 
-            // Crear el texto para la cultura
+            // creo el texto para la cultura
             const cardCulture = document.createElement('p');
             cardCulture.className = 'card-text';
             cardCulture.textContent = `Cultura: ${objeto.culture || 'Cultura sin identificar'}`;
 
-            // Crear el texto para la dinastía
+            // creo el texto para la dinastía
             const cardDynasty = document.createElement('p');
             cardDynasty.className = 'card-text';
             cardDynasty.textContent = `Dinastía: ${objeto.dynasty || 'Dinastia sin especificar'}`;
-
 
 
             // Agregar los elementos al cuerpo de la card
@@ -66,11 +62,11 @@ localStorage.clear();
                 btnVerMas.textContent = 'Ver más imágenes';
                 btnVerMas.onclick = function () {
                     // convierto obj en url Json
-                    metodo.guardarUltimaPagina( objetos )
+                    metodo.guardarUltimaPagina(objetos)
                     const objetoStr = encodeURIComponent(JSON.stringify(objeto));
 
-                    // redirijo al html img-adicionales
-                    window.location.href = `/add?objeto=${objetoStr}`;
+                    // Abre una nueva ventana o pestaña con la URL
+                    window.open(`/add?objeto=${objetoStr}`, '_blank');
                 };
 
                 cardBody.appendChild(btnVerMas);

@@ -1,7 +1,3 @@
-// const express = require('express');
-// const cors = require('cors');
-// const path = require('path');
-// const translate = require('node-google-translate-skidz');
 
 import express from 'express';
 import cors from 'cors';
@@ -75,7 +71,7 @@ app.get('/api/traerIdDeptos', async (req, res) => {
 // Realizar búsqueda con filtros - genera url y peticion - llena listaIds local 
 app.get('/api/buscar', async (req, res) => {
     console.time('buscar');
-    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '', extra  } = req.query;
+    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = ''  } = req.query;
 
     console.log(req.query)
 
@@ -84,15 +80,9 @@ app.get('/api/buscar', async (req, res) => {
     let f2 = filtro2 === 'true';
     let f3 = filtro3 === 'true';
 
-    console.log(extra)
 
     let url = '';
-    // console.log(f1)
-    // console.log(f2)
-    // console.log(f3)
-    // console.log(depto)
-    // console.log(local)
-    // console.log(palabra)
+
     if (f1 && f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && f2 && !f3) {
@@ -100,7 +90,7 @@ app.get('/api/buscar', async (req, res) => {
     } else if (f1 && !f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && !f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?hasImages=true&DepartmentId=${depto}&q=${extra}`;//
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/objects?hasImages=true&DepartmentId=${depto}`;//
     } else if (!f1 && f2 && f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}`;
     } else if (!f1 && f2 && !f3) {
@@ -112,7 +102,7 @@ app.get('/api/buscar', async (req, res) => {
     }
 
     try {
-        console.log(url + '//////')
+        //limpio la lista en caso de hacer nueva consulta
         listaIds = [];
         const response = await fetch(url);
         const data = await response.json();
@@ -142,47 +132,28 @@ app.get('/api/traerMuseosBack', async (req, res) => {
 
         switch (pagina) {
             case 1:
-                deptosPaginados = listaIds.objectIDs.slice(0, 200);
+                deptosPaginados = listaIds.objectIDs.slice(0, 100);
                 break;
             case 2:
-                deptosPaginados = listaIds.objectIDs.slice(1000, 1200);
+                deptosPaginados = listaIds.objectIDs.slice(100, 200);
                 break;
             case 3:
-                deptosPaginados = listaIds.objectIDs.slice(2000, 2200);
+                deptosPaginados = listaIds.objectIDs.slice(200, 300);
                 break;
             case 4:
-                deptosPaginados = listaIds.objectIDs.slice(3000, 3200);
+                deptosPaginados = listaIds.objectIDs.slice(300, 400);
                 break;
             case 5:
-                deptosPaginados = listaIds.objectIDs.slice(4000, 4200);
+                deptosPaginados = listaIds.objectIDs.slice(400, 500);
                 break;
             default:
                 console.log('Página fuera de rango');
                 break;
         }
 
-        //console.log(storedData)
-
-        //Este FOR tarda 5seg mas que el metodo Fetch
-        // for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
-        //     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-        //     //console.log(objectUrl)
-        //     const objectResponse = await fetch(objectUrl);
-        //     const objectData = await objectResponse.json();
-        //     //console.log(objectData)
-
-        //     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
-        //         deptos.push(objectData);
-        //     }
-
-        //     if (deptos.length >= 20) {
-        //         break;
-        //     }
-        // }
-
-        // test promiseAll
+        // promiseAll
         deptos = await fetchIndividual(deptosPaginados);
-        //console.log(results)
+
 
         ////////////////Probando traduccion
         // Traducir las propiedades title, culture y dynasty de cada objeto
@@ -242,7 +213,7 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
 
 /////Probando mejorar tiempos con consultas multiples//////////////////////////
 /////8.5segundos
-const fetchIndividual = async (deptosPaginados) => {
+const fetchIndividual = async ( deptosPaginados ) => {
     //console.time('fetchObjects');  // Inicia el temporizador
     const promises = deptosPaginados.map(async (id) => {
         const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
@@ -251,7 +222,6 @@ const fetchIndividual = async (deptosPaginados) => {
 
             // Verifica si el estado de la respuesta es 200 OK
             if (!response.ok) {
-                //console.error(`Error al obtener el objeto con ID ${id}: ${response.statusText}`);
                 return null; // Retorna null para que este objeto no se incluya en el resultado
             }
 
@@ -271,7 +241,6 @@ const fetchIndividual = async (deptosPaginados) => {
     // Filtrar los resultados no nulos (los que sí tienen imagen)
     const deptos = results.filter(obj => obj !== null);
 
-    //console.timeEnd('fetchObjects'); 
     // Limitar a 20 objetos
     return deptos.slice(0, 20);
 };
@@ -280,7 +249,22 @@ const fetchIndividual = async (deptosPaginados) => {
 //////////////////////////////////////////////////////////////
 
 
+ //Este FOR tarda 5seg mas que el metodo Fetch
+        // for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
+        //     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+        //     //console.log(objectUrl)
+        //     const objectResponse = await fetch(objectUrl);
+        //     const objectData = await objectResponse.json();
+        //     //console.log(objectData)
 
+        //     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
+        //         deptos.push(objectData);
+        //     }
+
+        //     if (deptos.length >= 20) {
+        //         break;
+        //     }
+        // }
 
 
 

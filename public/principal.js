@@ -2,13 +2,7 @@ import * as consultasBack from './consultasBack.js';
 import * as metodos from './metodos.js';
 import * as card from './card.js';
 
-console.log('andando')
-
 // Variables globales
-let indice;
-let palabra;
-let indiceLocal;
-let textLocal;
 const listaLocal = ['Mexico', 'Guatemala', 'United States', 'England', 'Spain', 'Netherlands', 'Canada', 'China', 'Italy', 'Germany', 'Japan', 'Czech Republic', 'France'];
 let pagina = 1;
 //Elementos html
@@ -26,19 +20,6 @@ const btnSiguiente = document.getElementById('btnSiguiente');
 //inicio
 metodos.mostrarSpinner(0);
 metodos.mostrarErrorFiltrosVacios(0);
-
-//Si vengo de img extras recuero ultima pagina
-
-if ( localStorage.getItem('ultimaPagina') ) {
-    console.log('siii hay elementos')
-    const obj = metodos.recuperarUltimaPagina()
-    card.crearCards( obj )
-} else {
-    console.log('No hay datos guardados en localStorage.');
-}
-
-
-
 
 
 //Carga de DDL y carga de array de dtos//ok
@@ -159,7 +140,7 @@ btnSiguiente.addEventListener('click', async () => {
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
-console.log( pagina )
+    
     const datosBack = await consultasBack.traerMuseosBack( pagina );
     
     card.crearCards(datosBack)

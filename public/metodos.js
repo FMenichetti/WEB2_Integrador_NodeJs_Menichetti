@@ -4,8 +4,6 @@
 //const elemForm = document.getElementById('form');
 const spinner = document.getElementById('spinner');
 //Elementos html
-const rbIndividual = document.getElementById('filtroIndividual');
-const rbAnidado = document.getElementById('filtroAnidado');
 //botones
 const btnDepto = document.getElementById('btnBuscarDepto');
 const btnLocation = document.getElementById('btnBuscarLocation');

@@ -8,17 +8,16 @@ let palabra;
 let indiceLocal;
 let textLocal;
 //////////////////////////Funciones de consulta a Back
-//Traigo los departamentos y los agrego a la ddl
+//////////////////////////Traigo los departamentos y los agrego a la ddl//////////////////////////////
 export const traerIdDeptos = async () => {
-    //Obtengo los Objetos de los departamentos
+    //url de consulta de deptos al back
     const url = `/api/traerIdDeptos`;
 
     try {
-        //Nombre de departamentos para llenar DDL
         const respuesta = await fetch(url);
         const data = await respuesta.json();
 
-        const elemDepartmentos = document.getElementById('departmentSelect');//id de select
+        const elemDepartmentos = document.getElementById('departmentSelect');
 
         for (const departamento of data) {
             const option = document.createElement('option');
@@ -37,18 +36,18 @@ export const traerIdDeptos = async () => {
     }
 
 }
-//Traigo los museos del back
+////////////////////////////////Traigo los museos del back/////////////////////////////////////////////
 export const traerMuseosBack = async( pagina = 1 ) => {
-
+//recibo la pagina actual, 
 //limpio storage
 localStorage.clear()
-
+//paso la pagina al back
     const apiUrl = `/api/traerMuseosBack?pagina=${ pagina }`;
     try {
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('No hubo respuesta del servidor');
         }
 
         const data = await response.json();
@@ -60,20 +59,9 @@ localStorage.clear()
     }
 }
 //Genero la url y la mando al back
-export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra, extra) => {
+export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) => {
 
     let url = '';
-
-    const corte = () => {
-        if (extra.toLowerCase().startsWith("the")) {
-            return extra.substring(4, 9); // Corta desde la 5ta letra hasta la 9na
-        } else {
-            return extra.substring(0, 4); // Corta las primeras 4 letras
-        }
-    }
-
-    // extra = corte();
-    console.log(extra + '////filtro')
 
     if (filtro1 && filtro2 && filtro3) {
         url = `/api/buscar?filtro1=true&filtro2=true&filtro3=true&geoLocation=${local}&palabra=${palabra}&depto=${depto}`;
@@ -82,7 +70,7 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra, e
     } else if (filtro1 && !filtro2 && filtro3) {
         url = `/api/buscar?filtro1=true&filtro2=false&filtro3=true&palabra=${palabra}&depto=${depto}`;
     } else if (filtro1 && !filtro2 && !filtro3) {
-        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}&extra=${extra}`;//
+        url = `/api/buscar?filtro1=true&filtro2=false&filtro3=false&depto=${depto}`;//
     } else if (!filtro1 && filtro2 && filtro3) {
         url = `/api/buscar?filtro1=false&filtro2=true&filtro3=true&local=${local}&palabra=${palabra}`;
     } else if (!filtro1 && filtro2 && !filtro3) {
@@ -110,7 +98,6 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
     //Elementos html
     indice = document.getElementById('departmentSelect').selectedIndex;
     extra = document.getElementById('departmentSelect').options[indice].text;
-    console.log(extra)
     indiceLocal = document.getElementById('localSelect').selectedIndex;
     textLocal = document.getElementById('localSelect').value;
     palabra = document.getElementById('inputPalabra').value;
@@ -138,7 +125,7 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
         metodos.mostrarErrorFiltrosVacios(0);
     }
     //obtengo array de ids pero los manejo en el back
-     await filtro(filtro1, filtro2, filtro3, indice, textLocal, palabra, extra);
+     await filtro(filtro1, filtro2, filtro3, indice, textLocal, palabra);
     
     const datosBack = await traerMuseosBack( pagina );
     
