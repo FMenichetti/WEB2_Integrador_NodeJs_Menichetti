@@ -66,7 +66,7 @@ export const limpiarFiltros = () => {
 }
 //manejo visibilidad de anterior y siguiente
 export const btnPaginacion = (pagina = 1) => {
-    const totalPaginas = 5; // Total de páginas
+    const totalPaginas = 4; // Total de páginas
 
     if (pagina === 1) {
         btnAnterior.style.display = 'none';   // Ocultar "Anterior" en la primera página
