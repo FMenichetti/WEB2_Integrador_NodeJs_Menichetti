@@ -40,7 +40,8 @@ export const traerIdDeptos = async () => {
 export const traerMuseosBack = async( pagina = 1 ) => {
 //recibo la pagina actual, 
 //limpio storage
-localStorage.clear()
+localStorage.clear();
+
 //paso la pagina al back
     const apiUrl = `/api/traerMuseosBack?pagina=${ pagina }`;
     try {
@@ -94,7 +95,7 @@ export const filtro = async (filtro1, filtro2, filtro3, depto, local, palabra) =
 export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de filtro y buscar museos por id
     //limpio storage
     localStorage.clear();
-    
+    document.getElementById('errorFiltros').style.display = 'none';
     //Elementos html
     indice = document.getElementById('departmentSelect').selectedIndex;
     extra = document.getElementById('departmentSelect').options[indice].text;
@@ -130,11 +131,16 @@ export const runBusqueda = async ( pagina ) => { //tengo dentro la funcion de fi
     const datosBack = await traerMuseosBack( pagina );
     
     //console.log('Datos obtenidos:', datosBack);
-    card.crearCards(datosBack, pagina)
 
+    card.crearCards(datosBack, pagina);
     metodos.mostrarSpinner(0);
+    
     //metodos.limpiarFiltros();
-    metodos.btnPaginacion( pagina );
+    if (Array.isArray(datosBack) && datosBack.length > 0) {
+        metodos.btnPaginacion( pagina );
+    } 
+    
+    
 
 }
 

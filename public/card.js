@@ -1,18 +1,20 @@
 
 import * as metodo from "./metodos.js";
+const errorFiltros = document.getElementById('errorFiltros')
 
 //recibo el objeto a pintar 
 export const crearCards = async (objetos) => {
     //limpio el storage
     localStorage.clear();
-
+    errorFiltros.style.display = 'none';
     const gallery = document.getElementById('gallery');
 
     if (!objetos || objetos.length === 0) {
-        let error = document.createElement('h3')
-        error.textContent = "No se encontraron datos para su busqueda"
-        gallery.appendChild(error);
-
+        // let error = document.createElement('h3')
+        // error.textContent = "No se encontraron datos para su busqueda"
+        // gallery.appendChild(error);
+        errorFiltros.style.display = 'block';
+        return;
     } else {
 
         objetos.forEach(objeto => {
@@ -82,6 +84,9 @@ export const crearCards = async (objetos) => {
             // Agregar la columna con la card al contenedor principal de la galería
             gallery.appendChild(cardCol);
         });
+
+        
+
     }
 
 }

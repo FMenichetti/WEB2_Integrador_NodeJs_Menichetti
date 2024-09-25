@@ -71,7 +71,7 @@ app.get('/api/traerIdDeptos', async (req, res) => {
 // Realizar búsqueda con filtros - genera url y peticion - llena listaIds local 
 app.get('/api/buscar', async (req, res) => {
     console.time('buscar');
-    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = ''  } = req.query;
+    const { filtro1, filtro2, filtro3, depto = 0, local = '', palabra = '' } = req.query;
 
     console.log(req.query)
 
@@ -112,7 +112,7 @@ app.get('/api/buscar', async (req, res) => {
         //probando
         // Inicializar un array para almacenar los datos
         listaIds = data;
-        console.log('largo de lista ' + listaIds.objectIDs.length)
+        //console.log('largo de lista ' + listaIds.objectIDs.length)
 
         console.timeEnd('buscar');
 
@@ -127,71 +127,92 @@ app.get('/api/traerMuseosBack', async (req, res) => {
     console.time('traerMuseosBack')
     const pagina = parseInt(req.query.pagina, 10);
     let deptosPaginados = [];
-    console.log(pagina)
-    try {
-        let deptos = [];
+    let deptosTraducidos = [];
 
-        switch (pagina) {
-            case 1:
-                deptosPaginados = listaIds.objectIDs.slice(0, 100);
-                break;
-            case 2:
-                deptosPaginados = listaIds.objectIDs.slice(100, 200);
-                break;
-            case 3:
-                deptosPaginados = listaIds.objectIDs.slice(200, 300);
-                break;
-            case 4:
-                deptosPaginados = listaIds.objectIDs.slice(300, 400);
-                break;
-            case 5:
-                deptosPaginados = listaIds.objectIDs.slice(400, 500);
-                break;
-            default:
-                console.log('Página fuera de rango');
-                break;
+    console.log(pagina);
+    
+    try {
+        // Verifica si `listaIds.objectIDs` es un array
+        if (Array.isArray(listaIds.objectIDs)) {
+            // Condición para cuando tiene más de 100 elementos
+            if (listaIds.objectIDs.length >= 100) {
+                switch (pagina) {
+                    case 1:
+                        deptosPaginados = listaIds.objectIDs.slice(0, 100);
+                        break;
+                    case 2:
+                        deptosPaginados = listaIds.objectIDs.length >= 200 ? listaIds.objectIDs.slice(100, 200) : [];
+                        break;
+                    case 3:
+                        deptosPaginados = listaIds.objectIDs.length >= 300 ? listaIds.objectIDs.slice(200, 300) : [];
+                        break;
+                    case 4:
+                        deptosPaginados = listaIds.objectIDs.length >= 400 ? listaIds.objectIDs.slice(300, 400) : [];
+                        break;
+                    case 5:
+                        deptosPaginados = listaIds.objectIDs.length >= 500 ? listaIds.objectIDs.slice(400, 500) : [];
+                        break;
+                    default:
+                        console.log('Página fuera de rango');
+                        deptosPaginados = [];
+                        break;
+                }
+            // Condición para cuando tiene entre 1 y 100 elementos
+            } else if (listaIds.objectIDs.length > 0 && listaIds.objectIDs.length < 100) {
+                deptosPaginados = listaIds.objectIDs; // Devuelve el mismo array si tiene entre 1 y 100 elementos
+            } else {
+                // Cuando el array no tiene ningún elemento
+                console.log('El array está vacío.');
+                deptosPaginados = [];
+                res.json(deptosPaginados);
+                return;
+            }
+        } else {
+            console.log('El array listaIds.objectIDs no es un array válido.');
+            deptosPaginados = [];
+            res.json(deptosPaginados);
+            return;
         }
 
-        // promiseAll
-        deptos = await fetchIndividual(deptosPaginados);
+        // Procesar deptosPaginados si no está vacío
+        if (deptosPaginados.length > 0) {
+            // promiseAll
+            const deptos = await fetchIndividual(deptosPaginados);
 
+            // Traducir las propiedades title, culture y dynasty de cada objeto
+            deptosTraducidos = await Promise.all(
+                deptos.map(async (objeto) => {
+                    const traducirSiNoVacio = async (texto) => {
+                        // Si existe traduzco, sino no
+                        return texto ? await traducirTexto(texto) : texto;
+                    };
 
-        ////////////////Probando traduccion
-        // Traducir las propiedades title, culture y dynasty de cada objeto
-        deptosTraducidos = await Promise.all(
-            deptos.map(async (objeto) => {
-                // función para manejar los campos vacios
-                const traducirSiNoVacio = async (texto) => {
-                    //Si existe traduzco, sino no
-                    return texto ? await traducirTexto(texto) : texto;
-                };
+                    // Traducir solo si el texto no está vacío
+                    const [titleTraducido, cultureTraducido, dynastyTraducido] = await Promise.all([
+                        traducirSiNoVacio(objeto.title),
+                        traducirSiNoVacio(objeto.culture),
+                        traducirSiNoVacio(objeto.dynasty)
+                    ]);
 
-                // Traducir solo si el texto no está vacío
-                const [titleTraducido, cultureTraducido, dynastyTraducido] = await Promise.all([
-                    traducirSiNoVacio(objeto.title),
-                    traducirSiNoVacio(objeto.culture),
-                    traducirSiNoVacio(objeto.dynasty)
-                ]);
+                    return {
+                        ...objeto,
+                        title: titleTraducido,
+                        culture: cultureTraducido,
+                        dynasty: dynastyTraducido
+                    };
+                })
+            );
+        }
 
-                return {
-                    ...objeto,
-                    title: titleTraducido,
-                    culture: cultureTraducido,
-                    dynasty: dynastyTraducido
-                };
-            })
-        );
-
-        console.timeEnd('traerMuseosBack')
-
-        //console.log(deptosTraducidos)
+        console.timeEnd('traerMuseosBack');
         res.json(deptosTraducidos);
-        //res.json(deptos);
+
     } catch (error) {
         console.error('Error al obtener objetos filtrados:', error);
         res.status(500).json({ message: 'Error al obtener objetos' });
     }
 });
+
 
 
 
@@ -214,7 +235,7 @@ const traducirTexto = async (texto, sourceLang = 'en', targetLang = 'es') => {
 
 /////Probando mejorar tiempos con consultas multiples//////////////////////////
 /////8.5segundos
-const fetchIndividual = async ( deptosPaginados ) => {
+const fetchIndividual = async (deptosPaginados) => {
     //console.time('fetchObjects');  // Inicia el temporizador
     const promises = deptosPaginados.map(async (id) => {
         const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
@@ -250,22 +271,22 @@ const fetchIndividual = async ( deptosPaginados ) => {
 //////////////////////////////////////////////////////////////
 
 
- //Este FOR tarda 5seg mas que el metodo Fetch
-        // for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
-        //     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-        //     //console.log(objectUrl)
-        //     const objectResponse = await fetch(objectUrl);
-        //     const objectData = await objectResponse.json();
-        //     //console.log(objectData)
+//Este FOR tarda 5seg mas que el metodo Fetch
+// for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
+//     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
+//     //console.log(objectUrl)
+//     const objectResponse = await fetch(objectUrl);
+//     const objectData = await objectResponse.json();
+//     //console.log(objectData)
 
-        //     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
-        //         deptos.push(objectData);
-        //     }
+//     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
+//         deptos.push(objectData);
+//     }
 
-        //     if (deptos.length >= 20) {
-        //         break;
-        //     }
-        // }
+//     if (deptos.length >= 20) {
+//         break;
+//     }
+// }
 
 
 
