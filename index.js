@@ -135,22 +135,22 @@ app.get('/api/traerMuseosBack', async (req, res) => {
         // Verifica si `listaIds.objectIDs` es un array
         if (Array.isArray(listaIds.objectIDs)) {
             // Condición para cuando tiene más de 100 elementos
-            if (listaIds.objectIDs.length >= 100) {
+            if (listaIds.objectIDs.length >= 150) {
                 switch (pagina) {
                     case 1:
-                        deptosPaginados = listaIds.objectIDs.slice(0, 100);
+                        deptosPaginados = listaIds.objectIDs.slice(0, 150);
                         break;
                     case 2:
-                        deptosPaginados = listaIds.objectIDs.length >= 200 ? listaIds.objectIDs.slice(100, 200) : [];
+                        deptosPaginados = listaIds.objectIDs.length >= 300 ? listaIds.objectIDs.slice(150, 300) : [];
                         break;
                     case 3:
-                        deptosPaginados = listaIds.objectIDs.length >= 300 ? listaIds.objectIDs.slice(200, 300) : [];
+                        deptosPaginados = listaIds.objectIDs.length >= 450 ? listaIds.objectIDs.slice(300, 450) : [];
                         break;
                     case 4:
-                        deptosPaginados = listaIds.objectIDs.length >= 400 ? listaIds.objectIDs.slice(300, 400) : [];
+                        deptosPaginados = listaIds.objectIDs.length >= 600 ? listaIds.objectIDs.slice(450, 600) : [];
                         break;
                     case 5:
-                        deptosPaginados = listaIds.objectIDs.length >= 500 ? listaIds.objectIDs.slice(400, 500) : [];
+                        deptosPaginados = listaIds.objectIDs.length >= 750 ? listaIds.objectIDs.slice(600, 750) : [];
                         break;
                     default:
                         console.log('Página fuera de rango');
@@ -158,7 +158,7 @@ app.get('/api/traerMuseosBack', async (req, res) => {
                         break;
                 }
             // Condición para cuando tiene entre 1 y 100 elementos
-            } else if (listaIds.objectIDs.length > 0 && listaIds.objectIDs.length < 100) {
+            } else if (listaIds.objectIDs.length > 0 && listaIds.objectIDs.length < 150) {
                 deptosPaginados = listaIds.objectIDs; // Devuelve el mismo array si tiene entre 1 y 100 elementos
             } else {
                 // Cuando el array no tiene ningún elemento
@@ -267,136 +267,3 @@ const fetchIndividual = async (deptosPaginados) => {
     return deptos.slice(0, 20);
 };
 
-
-//////////////////////////////////////////////////////////////
-
-
-//Este FOR tarda 5seg mas que el metodo Fetch
-// for (let id of deptosPaginados) {  // Aquí debería ser `idArray` para obtener cada ID
-//     const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-//     //console.log(objectUrl)
-//     const objectResponse = await fetch(objectUrl);
-//     const objectData = await objectResponse.json();
-//     //console.log(objectData)
-
-//     if (objectData.primaryImageSmall !== '') { /////////////////////filtrar mas que no queden vacios
-//         deptos.push(objectData);
-//     }
-
-//     if (deptos.length >= 20) {
-//         break;
-//     }
-// }
-
-
-
-
-// Ruta para obtener un objeto por ID
-// app.get('/api/individual', async (req, res) => {
-//     try {
-//         // Extraer el ID de los parámetros de consulta
-//         const { id } = req.query;
-
-//         if (!id) {
-//             return res.status(400).json({ message: 'ID es requerido' });
-//         }
-
-//         // URL del endpoint de la API externa con el ID incluido
-//         const url = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-//         const response = await fetch(url);
-
-//         if (!response.ok) {
-//             console.error(`Error al buscar el objeto con ID: ${id}. Estado: ${response.status}`);
-//             return res.status(response.status).json({ message: 'Error al buscar el objeto' });
-//         }
-
-//         const data = await response.json();
-//         res.json(data);
-//     } catch (error) {
-//         console.error('Error al obtener el objeto por ID:', error);
-//         res.status(500).json({ message: 'Error al obtener el objeto por ID' });
-//     }
-// });
-
-
-
-// Ruta para obtener los objetos filtrados por departamento
-// app.get('/api/traerMuseosConId', async (req, res) => {
-//     const { ids } = req.query; // Recibe la cadena de IDs desde los parámetros de consulta
-
-//     if (!ids) {
-//         return res.status(400).json({ message: 'No se proporcionaron IDs' });
-//     }
-
-//     try {
-//         let deptos = [];
-
-//         // Itera sobre cada ID en idArray
-//         console.log(ids)
-//         for (let id of ids) {  // Aquí debería ser `idArray` para obtener cada ID
-//             const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`;
-//             //console.log(objectUrl)
-//             const objectResponse = await fetch(objectUrl);
-//             const objectData = await objectResponse.json();
-//             //console.log(objectData)
-
-//             if (objectData.primaryImageSmall !== '') {
-//                 deptos.push(objectData);
-//             }
-
-//             if (deptos.length >= 30) {
-//                 break;
-//             }
-//         }
-
-//         res.json(deptos);
-//     } catch (error) {
-//         console.error('Error al obtener objetos filtrados:', error);
-//         res.status(500).json({ message: 'Error al obtener objetos' });
-//     }
-// });
-
-
-// Obtener localizaciones  de objetos
-// app.get('/api/traerLocal', async (req, res) => {
-//     try {
-//         // Hacer la petición inicial a la API para obtener todos los objectIDs
-//         const apiUrl = 'https://collectionapi.metmuseum.org/public/collection/v1/objects';
-//         const response = await fetch(apiUrl);
-//         const data = await response.json();
-
-//         const objectIDs = data.objectIDs; // Lista de objectIDs obtenidos desde la API
-//         //console.log(objectIDs)
-//         if (!objectIDs || objectIDs.length === 0) {
-//             return res.status(404).json({ message: 'No se encontraron objetos.' });
-//         }
-
-//         let location = '';
-//         // Iterar sobre cada ID en objectIDs
-//         for (let i = 0; i < objectIDs.length; i += 1) {/////no funciona
-//             const objectUrl = `https://collectionapi.metmuseum.org/public/collection/v1/objects/${i}`;
-//             const respObj = await fetch(objectUrl);
-//             const objData = await respObj.json();
-//             // Verificar si el campo 'repository' existe y no está vacío
-//             if (objData.country && objData.country.trim() !== '') {
-//                 location = objData.country;
-//                 //console.log(objData.repository)
-//             }
-//             // Si la localización no está vacía y no se repite, añadirla a listaLocal
-//             if (location && !listaLocal.includes(location)) {
-//                 listaLocal.push(location);
-//                 console.log(location + ' agregado')
-//             }
-//             // Detener cuando listaLocal tenga 15 localizaciones únicas
-//             if (listaLocal.length >= 15) {
-//                 break;
-//             }
-//         }
-
-//         // Enviar la lista de localizaciones como respuesta
-//         res.json(listaLocal);
-//     } catch (error) {
-//         console.error('Error al obtener localizaciones:', error);
-//         res.status(500).json({ message: 'Error al obtener localizaciones' });
-//     }
-// });
