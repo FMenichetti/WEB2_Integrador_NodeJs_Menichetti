@@ -32,6 +32,8 @@ export const traerIdDeptos = async () => {
         }
     }
     catch (error) {
+        const errorVercel = document.getElementById('errorVercel')
+        errorVercel.style.display = 'block';
         console.error('Error al cargar departamentos:', error);
     }
 

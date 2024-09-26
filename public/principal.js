@@ -8,6 +8,9 @@ let pagina = 1;
 //Elementos html
 const rbIndividual = document.getElementById('filtroIndividual');
 const rbAnidado = document.getElementById('filtroAnidado');
+//Error vercel
+const errorVercel = document.getElementById('errorVercel')
+        errorVercel.style.display = 'none';
 //botones
 const btnDepto = document.getElementById('btnBuscarDepto');
 const btnLocation = document.getElementById('btnBuscarLocation');
