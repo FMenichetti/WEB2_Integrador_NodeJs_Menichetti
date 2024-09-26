@@ -1,12 +1,14 @@
 
 import * as metodo from "./metodos.js";
 const errorFiltros = document.getElementById('errorFiltros')
+const errorVercel = document.getElementById('errorVercel')
 
 //recibo el objeto a pintar 
 export const crearCards = async (objetos) => {
     //limpio el storage
     localStorage.clear();
     errorFiltros.style.display = 'none';
+    errorVercel.style.display = 'none';
     const gallery = document.getElementById('gallery');
 
     if (!objetos || objetos.length === 0) {

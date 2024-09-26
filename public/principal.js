@@ -4,13 +4,13 @@ import * as card from './card.js';
 
 // Variables globales
 const listaLocal = ['Mexico', 'Guatemala', 'United States', 'England', 'Spain', 'Netherlands', 'Canada', 'China', 'Italy', 'Germany', 'Japan', 'Czech Republic', 'France'];
-let pagina = 1;
+let pagina = 1;const errorVercel = document.getElementById('errorVercel')
+errorVercel.style.display = 'none';
 //Elementos html
 const rbIndividual = document.getElementById('filtroIndividual');
 const rbAnidado = document.getElementById('filtroAnidado');
 //Error vercel
-const errorVercel = document.getElementById('errorVercel')
-        errorVercel.style.display = 'none';
+
 //botones
 const btnDepto = document.getElementById('btnBuscarDepto');
 const btnLocation = document.getElementById('btnBuscarLocation');
@@ -75,8 +75,8 @@ btnDepto.addEventListener('click', async () => {
         metodos.mostrarErrorFiltrosVacios(1);
         return;
     }
-    
-    await consultasBack.runBusqueda( pagina );
+
+    await consultasBack.runBusqueda(pagina);
 })
 
 //Buscar por Location usa RUN
@@ -98,7 +98,7 @@ btnLocation.addEventListener('click', async () => {
         return;
     }
 
-    await consultasBack.runBusqueda( pagina );
+    await consultasBack.runBusqueda(pagina);
 })
 //Buscar por palabra usa RUN
 btnPalabra.addEventListener('click', async () => {
@@ -119,7 +119,7 @@ btnPalabra.addEventListener('click', async () => {
         return;
     }
 
-    await consultasBack.runBusqueda( pagina );
+    await consultasBack.runBusqueda(pagina);
 
 })
 
@@ -132,42 +132,42 @@ btnSubmit.addEventListener('click', async (event) => {
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
 
-    await consultasBack.runBusqueda( pagina );
-    
+    await consultasBack.runBusqueda(pagina);
+
 
 })
 //Paginacion siguiente eventos usa TMB
 btnSiguiente.addEventListener('click', async () => {
 
-    pagina ++;
+    pagina++;
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
-    
-    const datosBack = await consultasBack.traerMuseosBack( pagina );
-    
+
+    const datosBack = await consultasBack.traerMuseosBack(pagina);
+
     card.crearCards(datosBack)
 
     metodos.mostrarSpinner(0);
     metodos.limpiarFiltros();
-    metodos.btnPaginacion( pagina );
+    metodos.btnPaginacion(pagina);
 
 });
 //Paginacion anterior eventos usa TMB
-btnAnterior.addEventListener('click', async() => {
-    
-    pagina --;
+btnAnterior.addEventListener('click', async () => {
+
+    pagina--;
     metodos.borroGaleria();
     metodos.mostrarSpinner(1);
     metodos.mostrarErrorFiltrosVacios(0);
-    console.log( pagina )
-    const datosBack = await consultasBack.traerMuseosBack( pagina );
-    
+    console.log(pagina)
+    const datosBack = await consultasBack.traerMuseosBack(pagina);
+
     card.crearCards(datosBack)
 
     metodos.mostrarSpinner(0);
     metodos.limpiarFiltros();
-    metodos.btnPaginacion( pagina );
+    metodos.btnPaginacion(pagina);
 
 });
 
