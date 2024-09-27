@@ -5,6 +5,8 @@ const errorVercel = document.getElementById('errorVercel')
 
 //recibo el objeto a pintar 
 export const crearCards = async (objetos) => {
+
+    objetos = _.shuffle( objetos )
     //limpio el storage y divs de errores
     localStorage.clear();
     errorFiltros.style.display = 'none';

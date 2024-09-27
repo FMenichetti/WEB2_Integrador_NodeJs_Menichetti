@@ -84,19 +84,19 @@ app.get('/api/buscar', async (req, res) => {
     let url = '';
 
     if (f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=*&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*&DepartmentId=${depto}`;
     } else if (f1 && !f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}&DepartmentId=${depto}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}&DepartmentId=${depto}`;
     } else if (f1 && !f2 && !f3) {
         url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=*&DepartmentId=${depto}`;//
     } else if (!f1 && f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=${palabra}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=${palabra}`;
     } else if (!f1 && f2 && !f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&geoLocation=${local}&q=*`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?geoLocation=${local}&q=*`;
     } else if (!f1 && !f2 && f3) {
-        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=${palabra}`;
+        url = `https://collectionapi.metmuseum.org/public/collection/v1/search?q=${palabra}`;
     } else if (!f1 && !f2 && !f3) {
         return res.json([]); // Ningún filtro seleccionado
     }
@@ -107,13 +107,13 @@ app.get('/api/buscar', async (req, res) => {
         console.log('url: ' + url)
         const response = await fetch(url);
         const data = await response.json();
-        res.json(data);
-
+        
         //probando
         // Inicializar un array para almacenar los datos
         listaIds = data;
         //console.log('largo de lista ' + listaIds.objectIDs.length)
-
+        
+        res.json(data);
         console.timeEnd('buscar');
 
     } catch (error) {

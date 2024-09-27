@@ -18,7 +18,7 @@ export const traerIdDeptos = async () => {
         const data = await respuesta.json();
 
         const elemDepartmentos = document.getElementById('departmentSelect');
-
+//llenado de desplegable
         for (const departamento of data) {
             const option = document.createElement('option');
 
@@ -32,7 +32,7 @@ export const traerIdDeptos = async () => {
         }
     }
     catch (error) {
-        //div de error conexion vercel  //////
+        //div de error conexion vercel  ////////
         const errorVercel = document.getElementById('errorVercel')
         errorVercel.style.display = 'block';
         console.error('Error al cargar departamentos:', error);
